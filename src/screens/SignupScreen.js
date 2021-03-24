@@ -1,51 +1,36 @@
 //import liraries
-import React, { Component, useState, useContext } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { Component, useContext } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, Input, Button } from 'react-native-elements'
+import AuthForm from '../components/AuthForm';
 import Spacer from '../components/Spacer';
+import NavLink from '../components/NavLink';
 import {Context as AuthContext} from '../context/AuthContext'
+import { NavigationEvents } from 'react-navigation'
 
 // create a component
 const SignupScreen = ({ navigation }) => {
 
-  const { state, signup } = useContext(AuthContext);
-
-
-  const [ email, setEmail ] = useState('');
-  const [ password, setPassword ] = useState(''); 
+  const { state, signup, clearErrorMessage } = useContext(AuthContext);
 
   const { errorMessage } = state;
 
   return (  
     <View style={styles.container}>
-      <Spacer>
-        <Text h3>Sign Up for Tracker</Text>
-      </Spacer>
-      <Spacer>
-        <Input 
-          label="Email" 
-          value={email} 
-          onChangeText={setEmail} 
-          autoCapitalize="none" 
-          autoCorrect={false}/>
-      </Spacer>
-      <Spacer>
-        <Input 
-          secureTextEntry={true}
-          label="Password" 
-          value={password} 
-          onChangeText={setPassword} 
-          autoCapitalize="none" 
-          autoCorrect={false}/>
-      </Spacer>
-      {
-        errorMessage  
-        ? <Text style={styles.errorMessage}>{ errorMessage }</Text>
-        : null
-      }
-      <Spacer>
-        <Button title="Sign Up" onPress={() => signup({ email, password })}/>
-      </Spacer>
+      <NavigationEvents 
+        onWillBlur={clearErrorMessage}
+        onWillFocus={clearErrorMessage}
+      />
+      <AuthForm
+        headerText="Sign Up for Tracker"
+        errorMessage={errorMessage}
+        submitButtonText="Sign Up"
+        onSubmit={signup}
+      />
+      <NavLink
+        routeName="Signin"
+        text="Already Have an Account? Sign in"
+      />
     </View>
   );
 };
@@ -63,11 +48,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 250
   },
-  errorMessage: {
-    fontSize: 16,
-    color: 'red',
-    marginLeft: 20,
-    marginTop: 15
+  link: {
+    color: 'blue'
   }
 });
 
